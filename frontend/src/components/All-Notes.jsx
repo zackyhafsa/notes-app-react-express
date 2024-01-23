@@ -1,9 +1,17 @@
 import React, { useEffect, useState } from "react";
 import NotesForm from "./Notes-form";
 import axios from "axios";
+import UpdateNotes from "./updateNotes";
 
 const Notes = () => {
   const [notes, setNotes] = useState([]);
+  const [updateNote, setUpdateNote] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = (note) => {
+    setUpdateNote(note);
+    setIsModalOpen(true);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,8 +32,16 @@ const Notes = () => {
   };
 
   return (
-    <div>
+    <div className="">
       <NotesForm />
+      {isModalOpen && (
+        <UpdateNotes
+          closeModal={() => setIsModalOpen(false)}
+          initialTitle={updateNote.title}
+          initialAuthor={updateNote.author}
+          initialContent={updateNote.content}
+        />
+      )}
       <div className="w-full mt-6">
         <div className="w-[70%] mx-auto grid grid-cols-3 gap-2">
           {Array.isArray(notes) && notes.length > 0 ? (
@@ -39,9 +55,20 @@ const Notes = () => {
                     <h2 className="card-title">{note.title}</h2>
                     <h3 className="text-slate-400">{note.author}</h3>
                     <p>{note.content}</p>
-                    <button className="btn btn-primary mt-4" onClick={() => deleteNote(note.id)}>
-                      Hapus
-                    </button>
+                    <div className="w-full flex gap-2">
+                      <button
+                        className="btn btn-primary mt-4 w-1/2"
+                        onClick={() => deleteNote(note.id)}
+                      >
+                        Hapus
+                      </button>
+                      <button
+                        className="btn btn-primary mt-4 w-1/2"
+                        onClick={() => openModal(note)}
+                      >
+                        Ubah
+                      </button>
+                    </div>
                   </div>
                 </div>
               );
