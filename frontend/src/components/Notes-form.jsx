@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const NotesForm = () => {
   const [title, setTitle] = useState("");
@@ -8,22 +9,28 @@ const NotesForm = () => {
 
   const addNote = async (e) => {
     e.preventDefault();
-    const response = await axios.post("http://localhost:3000/notes", {
-      title,
-      author,
-      content,
-    });
+    try {
+      const response = await axios.post("http://localhost:3000/notes", {
+        title,
+        author,
+        content,
+      });
 
-    const newNote = response.data;
-    console.log(newNote);
-    setTitle("");
-    setAuthor("");
-    setContent("");
+      const newNote = response.data;
+      console.log(newNote);
+      setTitle("");
+      setAuthor("");
+      setContent("");
+
+      toast.info("Catatan berhasil ditambahkan");
+    } catch (error) {
+      toast.error("Catatan gagal ditambahkan");
+    }
   };
 
   return (
     <div className="w-full">
-      <div className="w-[40%] mx-auto">
+      <div className="w-[40%] mx-auto max-lg:w-[70%] max-md:w-[90%]">
         <h1 className="font-bold text-3xl text-primary my-5">Notes App</h1>
         <div className="">
           <div className="">
